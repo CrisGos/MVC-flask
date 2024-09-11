@@ -1,0 +1,26 @@
+version: '3.8' #Setting version
+
+services: #Setting the services for both, db and application
+  mysql: # here we set up a mysql database
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'flask'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  web: # here we setup the web server
+    build: .
+    command: python manage.py runserver --host=0.0.0.0
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mysql
+
+volumes: #setup the volume called  into mysql volume
+  mysql_data:
